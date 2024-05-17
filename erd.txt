@@ -1,0 +1,21 @@
+origin
+-
+id pk
+origin text unique
+skip boolean null
+
+page
+-
+id pk
+status NULL
+title text NULL
+url text unique
+origin_id fk
+
+link
+-
+id pk
+href text
+text text
+from_page_id fk >0- page.id
+to_page_id fk >0- page.id
