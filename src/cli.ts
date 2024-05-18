@@ -5,10 +5,16 @@ import { scanAndFollow } from './scanner'
 export async function main() {
   config()
 
-  let entryUrl = process.env.SITE_DIR
-  if (entryUrl) {
+  let entryUrl: string | undefined = undefined
+  if (process.argv.length == 3 && !process.env.SITE_DIR) {
+    entryUrl = process.argv[2]
+    console.log('loaded entryUrl from argument.')
+  }
+  if (!entryUrl && process.env.SITE_DIR) {
+    entryUrl = process.env.SITE_DIR
     console.log('auto loaded SITE_DIR from env as entryUrl.')
-  } else {
+  }
+  if (!entryUrl) {
     entryUrl = await ask('entryUrl: ')
   }
   if (!entryUrl) {
@@ -21,11 +27,14 @@ export async function main() {
     console.log('auto loaded ORIGINS from env')
   } else {
     let origin = new URL(entryUrl).origin
-    origins =
-      (await ask(
-        `origins (default "${origin}", multiple origins can be delimited by common ","): `,
-      )) || origin
+    console.log()
+    console.log('Please specified the origins of links to follow.')
+    console.log('Multiple origins can be delimited by comma (",").')
+    origins = (await ask(`origins (default: "${origin}"): `)) || origin
   }
+  let origin_list = origins.split(',').map(origin => origin.trim())
+  console.log('origins:', origin_list)
+  console.log()
 
   let csv_file = process.env['404_CSV_FILE']
   if (csv_file) {
@@ -36,7 +45,7 @@ export async function main() {
 
   await scanAndFollow({
     entryUrl: entryUrl,
-    origins: origins.split(',').map(origin => origin.trim()),
+    origins: origin_list,
     report_404_stats: true,
     export_404_csv_file: csv_file,
     close_browser: true,
