@@ -36,11 +36,15 @@ export async function main() {
   console.log('origins:', origin_list)
   console.log()
 
-  let csv_file = process.env['404_CSV_FILE']
+  let csv_file = process.env['REPORT_404_CSV_FILE']
   if (csv_file) {
-    console.log('auto loaded path of CSV file to be saved from env')
+    console.log(
+      'auto loaded path of CSV file to be saved from env REPORT_404_CSV_FILE',
+    )
   } else {
-    csv_file = (await ask('404_CSV_FILE (default "404.csv"): ')) || '404.csv'
+    csv_file =
+      (await ask('path of CSV file to be saved (default "404.csv"): ')) ||
+      '404.csv'
   }
 
   await scanAndFollow({
