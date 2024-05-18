@@ -1,19 +1,31 @@
 {
   "name": "link-scanner",
   "version": "1.0.0",
-  "description": "",
-  "keywords": [],
-  "author": {
-    "name": "Beeno Tung",
-    "email": "aabbcc1241@yahoo.com.hk",
-    "url": "https://beeno-tung.surge.sh"
-  },
+  "description": "Scan given website recursively and report 404 links",
+  "keywords": [
+    "link-scanner",
+    "broken-links",
+    "404-errors",
+    "website-scanner",
+    "url-scanner",
+    "link-checker",
+    "web-crawler",
+    "link-validator",
+    "seo-tools",
+    "web-tools",
+    "csv-report",
+    "http-status",
+    "link-analyzer",
+    "web-scraping",
+    "cli"
+  ],
+  "author": "Beeno Tung <aabbcc1241@yahoo.com.hk> (https://beeno-tung.surge.sh)",
   "license": "BSD-2-Clause",
   "main": "index.js",
   "bin": {
-    "link-scanner": "./bin.js",
-    "scan-link": "./bin.js",
-    "scan-link-cli": "./bin.js"
+    "link-scanner": "bin.js",
+    "scan-link": "bin.js",
+    "scan-link-cli": "bin.js"
   },
   "files": [
     "dist"
