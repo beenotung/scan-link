@@ -3,6 +3,7 @@
   "version": "1.0.3",
   "description": "Scan given website recursively and report 404 links",
   "keywords": [
+    "cli",
     "link-scanner",
     "broken-links",
     "404-errors",
@@ -17,7 +18,7 @@
     "http-status",
     "link-analyzer",
     "web-scraping",
-    "cli"
+    "typescript-library"
   ],
   "author": "Beeno Tung <aabbcc1241@yahoo.com.hk> (https://beeno-tung.surge.sh)",
   "license": "BSD-2-Clause",
