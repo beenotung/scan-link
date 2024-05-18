@@ -15,9 +15,12 @@
     "scan-link": "./bin.js",
     "scan-link-cli": "./bin.js"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "tsc --noEmit",
-    "build": "rimraf dist && tsc -p .",
+    "build": "rimraf dist && tsc -p . && rimraf dist/migrations/*.d.ts dist/test* dist/*.d.ts",
     "db:setup": "npm run db:migrate",
     "db:dev": "run-s db:migrate db:plan db:update",
     "db:migrate": "knex migrate:latest",
