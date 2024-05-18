@@ -15,6 +15,7 @@ function getBrowser() {
   return browserP
 }
 
+/** @description close the lazy loaded browser instance if it's launched */
 export async function closeBrowser() {
   if (browserP) {
     let p = browserP.then(browser => browser.close())
@@ -247,6 +248,7 @@ group by from_page.id
   )
   .pluck()
 
+/** @description called by `scanAndFollow()` if `options.report_404_stats` is true */
 export function get404Report(options: { origin: string }) {
   let origin_id = getOrigin(options.origin).id!
   return {
@@ -273,6 +275,7 @@ where to_page.status = 404
   and from_page.origin_id = :origin_id
 `)
 
+/** @description called by `scanAndFollow()` if `options.export_404_csv_file` is specified */
 export function export404Pages(options: { csv_file: string; origin: string }) {
   let file = options.csv_file
   let origin_id = getOrigin(options.origin).id!
