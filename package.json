@@ -21,6 +21,14 @@
   ],
   "author": "Beeno Tung <aabbcc1241@yahoo.com.hk> (https://beeno-tung.surge.sh)",
   "license": "BSD-2-Clause",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beenotung/scan-link.git"
+  },
+  "homepage": "https://github.com/beenotung/scan-link#readme",
+  "bugs": {
+    "url": "https://github.com/beenotung/scan-link/issues"
+  },
   "main": "index.js",
   "bin": {
     "link-scanner": "bin.js",
