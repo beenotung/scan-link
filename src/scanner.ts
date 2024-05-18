@@ -1,19 +1,24 @@
 import { Page, chromium } from 'playwright'
 import { find, count } from 'better-sqlite3-proxy'
 import { proxy, Page as PageRow, Origin } from './proxy'
-import { db, dbFile } from './db'
+import { db } from './db'
 import { ProgressCli } from '@beenotung/tslib/progress-cli'
-import { appendFileSync, writeFileSync } from 'fs'
+import { writeFileSync } from 'fs'
+import { to_csv, json_to_csv } from '@beenotung/tslib/csv'
 
-let getBrowser = async () => {
+let getBrowser = getNewBrowser
+
+async function getNewBrowser() {
   let browser = await chromium.launch()
   getBrowser = async () => browser
   return browser
 }
 
 export async function closeBrowser() {
-  let browser = await getBrowser()
-  await browser.close()
+  if (getBrowser == getNewBrowser) return
+  let p = getBrowser().then(browser => browser.close())
+  getBrowser = getNewBrowser
+  return p
 }
 
 let usePage = async <T>(fn: (page: Page) => T | Promise<T>) => {
@@ -166,8 +171,18 @@ export async function scanAndFollow(options: {
   entryUrl: string
   /** @default same as entryUrl */
   origins?: string[]
+  /** @description report stats on 404 pages and links */
+  report_404_stats?: boolean
+  /** @description specified filename to report 404 links. Skip reporting if not specified. */
+  export_404_csv_file?: string
+  /**
+   * @description auto close browser after all scanning
+   * @default true
+   */
+  close_browser?: boolean
 }) {
-  let origins: string[] = options.origins || [new URL(options.entryUrl).origin]
+  let origin = new URL(options.entryUrl).origin
+  let origins: string[] = options.origins || [origin]
   let cli = new ProgressCli()
   let i = 0
 
@@ -186,8 +201,23 @@ export async function scanAndFollow(options: {
     await scanPage(page)
     i++
   }
+  cli.update(`scanned: ${i} pages`)
   cli.nextLine()
-  cli.writeln('done.')
+  if (options.report_404_stats) {
+    let report = get404Report({ origin })
+    console.log(report)
+  }
+  if (options.export_404_csv_file) {
+    cli.update(
+      'exporting 404 pages to file: ' + options.export_404_csv_file + ' ...',
+    )
+    export404Pages({ csv_file: options.export_404_csv_file, origin })
+    cli.update('exported 404 pages to file: ' + options.export_404_csv_file)
+    cli.nextLine()
+  }
+  if (options.close_browser != false) {
+    await closeBrowser()
+  }
 }
 
 let count_404_link = db
@@ -230,9 +260,10 @@ group by from_page.id
 export function get404Report(options: { origin: string }) {
   let origin_id = getOrigin(options.origin).id!
   return {
-    '404 link count': count_404_link.get({ origin_id })!,
-    'total link count': count_all_link.get({ origin_id })!,
-    'page count with 404 link': count_pages_with_404_link.get({ origin_id })!,
+    '404 link count': count_404_link.get({ origin_id }) || 0,
+    'total link count': count_all_link.get({ origin_id }) || 0,
+    'page count with 404 link':
+      count_pages_with_404_link.get({ origin_id }) || 0,
     'total page count': count(proxy.page, { origin_id }),
   }
 }
@@ -255,9 +286,10 @@ where to_page.status = 404
 export function export404Pages(options: { csv_file: string; origin: string }) {
   let file = options.csv_file
   let origin_id = getOrigin(options.origin).id!
-  writeFileSync(file, 'url,text,href\n')
-  let iter = select_404_page.iterate({ origin_id })
-  for (let page of iter) {
-    appendFileSync(file, `${page.url},${page.text},${page.href}\n`)
+  let pages = select_404_page.all({ origin_id })
+  for (let page of pages) {
+    page.text = page.text.trim()
   }
+  let csv = to_csv(json_to_csv(pages))
+  writeFileSync(file, csv)
 }

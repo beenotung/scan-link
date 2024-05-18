@@ -1,10 +1,11 @@
-import { closeBrowser, get404Report, scanAndFollow } from './src/scanner'
+import { scanAndFollow } from './src/scanner'
 
 async function main() {
   let entryUrl = 'http://localhost:8200/'
-  await scanAndFollow({ entryUrl })
-  await closeBrowser()
-  let report = get404Report({ origin: new URL(entryUrl).origin })
-  console.log(report)
+  await scanAndFollow({
+    entryUrl,
+    report_404_stats: true,
+    export_404_csv_file: '404.csv',
+  })
 }
 main().catch(e => console.error(e))
