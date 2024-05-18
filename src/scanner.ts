@@ -1,8 +1,9 @@
 import { Page, chromium } from 'playwright'
-import { find } from 'better-sqlite3-proxy'
+import { find, count } from 'better-sqlite3-proxy'
 import { proxy, Page as PageRow, Origin } from './proxy'
 import { db, dbFile } from './db'
 import { ProgressCli } from '@beenotung/tslib/progress-cli'
+import { appendFileSync, writeFileSync } from 'fs'
 
 let getBrowser = async () => {
   let browser = await chromium.launch()
@@ -190,34 +191,48 @@ export async function scanAndFollow(options: {
 }
 
 let count_404_link = db
-  .prepare<void[], number>(
+  .prepare<{ origin_id: number }, number>(
     /* sql */ `
 select count(link.id)
 from link
 inner join page as from_page on from_page.id = link.from_page_id
 inner join page as to_page on to_page.id = link.to_page_id
 where to_page.status = 404
+  and from_page.origin_id = :origin_id
+`,
+  )
+  .pluck()
+
+let count_all_link = db
+  .prepare<{ origin_id: number }, number>(
+    /* sql */ `
+select count(link.id) from link
+inner join page as from_page on from_page.id = link.from_page_id
+where from_page.origin_id = :origin_id
 `,
   )
   .pluck()
 
 let count_pages_with_404_link = db
-  .prepare<void[], number>(
+  .prepare<{ origin_id: number }, number>(
     /* sql */ `
 select count(from_page.id)
 from link
 inner join page as from_page on from_page.id = link.from_page_id
 inner join page as to_page on to_page.id = link.to_page_id
 where to_page.status = 404
+  and from_page.origin_id = :origin_id
+group by from_page.id
 `,
   )
   .pluck()
 
-export function get404Report() {
+export function get404Report(options: { origin: string }) {
+  let origin_id = getOrigin(options.origin).id!
   return {
-    '404 link count': count_404_link.get()!,
-    'total link count': proxy.link.length,
-    'page count with 404 link': count_pages_with_404_link.get()!,
-    'total page count': proxy.page.length,
+    '404 link count': count_404_link.get({ origin_id })!,
+    'total link count': count_all_link.get({ origin_id })!,
+    'page count with 404 link': count_pages_with_404_link.get({ origin_id })!,
+    'total page count': count(proxy.page, { origin_id }),
   }
 }
