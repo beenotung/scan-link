@@ -1,8 +1,8 @@
-# link-scanner
+# scan-link
 
 Scan given website recursively and report 404 links
 
-[![npm Package Version](https://img.shields.io/npm/v/link-scanner)](https://www.npmjs.com/package/link-scanner)
+[![npm Package Version](https://img.shields.io/npm/v/scan-link)](https://www.npmjs.com/package/scan-link)
 
 ## Features
 
@@ -13,30 +13,30 @@ Scan given website recursively and report 404 links
 
 ## Installation (optional)
 
-You can install link-scanner for version control, or execute it via `npx` without installation.
+You can install scan-link for version control, or execute it via `npx` without installation.
 
-To install `link-scanner`, use npm:
+To install `scan-link`, use npm:
 
 ```bash
-npm install link-scanner
+npm install scan-link
 ```
 
 You may install it as dev dependency or global dependency based on your preference.
 
 ## Usage
 
-You can use `link-scanner` from the command line via `npx`. The configuration can be provided via environment variables or interactively during execution.
+You can use `scan-link` from the command line via `npx`. The configuration can be provided via environment variables or interactively during execution.
 
 Usage with dev/global installation:
 
 ```bash
-npx link-scanner
+npx scan-link
 ```
 
 Usage without installation:
 
 ```bash
-npx -y link-scanner
+npx -y scan-link
 ```
 
 ### Environment Variables
@@ -55,10 +55,10 @@ REPORT_404_CSV_FILE=report.csv
 
 ### Interactive Usage
 
-If environment variables are not set, `link-scanner` will prompt you for the necessary information.
+If environment variables are not set, `scan-link` will prompt you for the necessary information.
 
 ```bash
-npx link-scanner
+npx scan-link
 ```
 
 You will be prompted to setup above variables.
@@ -66,7 +66,7 @@ You will be prompted to setup above variables.
 ### Example Interactive Session
 
 ```bash
-$ npx -y link-scanner
+$ npx -y scan-link
 entryUrl: http://localhost:8200/
 
 Please specified the origins of links to follow.
