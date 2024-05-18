@@ -6,13 +6,13 @@ export async function main() {
   config()
 
   let entryUrl: string | undefined = undefined
-  if (process.argv.length == 3 && !process.env.SITE_DIR) {
+  if (process.argv.length == 3 && !process.env.SITE_URL) {
     entryUrl = process.argv[2]
     console.log('loaded entryUrl from argument.')
   }
-  if (!entryUrl && process.env.SITE_DIR) {
-    entryUrl = process.env.SITE_DIR
-    console.log('auto loaded SITE_DIR from env as entryUrl.')
+  if (!entryUrl && process.env.SITE_URL) {
+    entryUrl = process.env.SITE_URL
+    console.log('auto loaded SITE_URL from env as entryUrl.')
   }
   if (!entryUrl) {
     entryUrl = await ask('entryUrl: ')
