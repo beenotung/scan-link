@@ -53,18 +53,6 @@ type FromPage = {
   origin_id: number
 }
 
-function getFromPageId(page: FromPage): number {
-  let row = find(proxy.page, { url: page.url })
-  if (!row) return proxy.page.push(page)
-  if (row.title !== page.title) {
-    row.title = page.title
-  }
-  if (row.status !== page.status) {
-    row.status = page.status
-  }
-  return row.id!
-}
-
 function getToPageId(url: string): number {
   let row = find(proxy.page, { url })
   if (row) return row.id!
