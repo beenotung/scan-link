@@ -1,4 +1,4 @@
-import { Page, chromium } from 'playwright'
+import { Browser, Page, chromium } from 'playwright'
 import { find, count } from 'better-sqlite3-proxy'
 import { proxy, Page as PageRow, Origin } from './proxy'
 import { db } from './db'
@@ -6,19 +6,21 @@ import { ProgressCli } from '@beenotung/tslib/progress-cli'
 import { writeFileSync } from 'fs'
 import { to_csv, json_to_csv } from '@beenotung/tslib/csv'
 
-let getBrowser = getNewBrowser
+let browserP: Promise<Browser> | undefined
 
-async function getNewBrowser() {
-  let browser = await chromium.launch()
-  getBrowser = async () => browser
-  return browser
+function getBrowser() {
+  if (!browserP) {
+    browserP = chromium.launch()
+  }
+  return browserP
 }
 
 export async function closeBrowser() {
-  if (getBrowser == getNewBrowser) return
-  let p = getBrowser().then(browser => browser.close())
-  getBrowser = getNewBrowser
-  return p
+  if (browserP) {
+    let p = browserP.then(browser => browser.close())
+    browserP = undefined
+    return p
+  }
 }
 
 let usePage = async <T>(fn: (page: Page) => T | Promise<T>) => {
