@@ -27,7 +27,7 @@ You may install it as dev dependency or global dependency based on your preferen
 
 You can use `link-scanner` from the command line via `npx`. The configuration can be provided via environment variables or interactively during execution.
 
-Usage with installation:
+Usage with dev/global installation:
 
 ```bash
 npx link-scanner
