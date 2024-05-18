@@ -1,6 +1,6 @@
 {
   "name": "scan-link",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Scan given website recursively and report 404 links",
   "keywords": [
     "link-scanner",
