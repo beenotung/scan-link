@@ -8,7 +8,7 @@ const config: { [key: string]: Knex.Config } = {
     connection: {
       filename: dbFile,
     },
-  }
+  },
 }
 
-module.exports = config;
+module.exports = config
