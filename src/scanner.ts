@@ -236,3 +236,28 @@ export function get404Report(options: { origin: string }) {
     'total page count': count(proxy.page, { origin_id }),
   }
 }
+
+let select_404_page = db.prepare<
+  { origin_id: number },
+  { url: string; text: string; href: string }
+>(/* sql */ `
+select
+  from_page.url
+, link.text
+, link.href
+from link
+inner join page as from_page on from_page.id = link.from_page_id
+inner join page as to_page on to_page.id = link.to_page_id
+where to_page.status = 404
+  and from_page.origin_id = :origin_id
+`)
+
+export function export404Pages(options: { csv_file: string; origin: string }) {
+  let file = options.csv_file
+  let origin_id = getOrigin(options.origin).id!
+  writeFileSync(file, 'url,text,href\n')
+  let iter = select_404_page.iterate({ origin_id })
+  for (let page of iter) {
+    appendFileSync(file, `${page.url},${page.text},${page.href}\n`)
+  }
+}
