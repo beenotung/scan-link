@@ -1,8 +1,24 @@
 import { config } from 'dotenv'
 import { ask } from 'npm-init-helper'
 import { scanAndFollow } from './scanner'
+import { homedir } from 'os'
 
 export async function main() {
+  if (process.cwd() == homedir()) {
+    console.log(`
+Error: You are currently running scan-link from the home directory.
+
+scan-link store the links and page status in the "db.sqlite3" file of the current directory.
+Please create a directory/folder for scan-link and change the current working directory into that directory.
+
+For example:
+$ mkdir links
+$ cd links
+$ npx -y scan-link [entryUrl]
+`)
+    process.exit(1)
+  }
+
   config()
 
   let entryUrl: string | undefined = undefined

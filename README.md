@@ -11,6 +11,10 @@ Scan given website recursively and report 404 links
 - Report links that lead to 404 pages
 - Export 404 error report as a CSV file
 
+## Remark
+
+The links and page status code are stored in the `db.sqlite3` file of the current working directory. You may run `mkdir` and `cd` to a specific directory to avoid storing it in the home directory.
+
 ## Installation (optional)
 
 You can install scan-link for version control, or execute it via `npx` without installation.
