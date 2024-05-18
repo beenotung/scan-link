@@ -30,14 +30,16 @@ You can use `scan-link` from the command line via `npx`. The configuration can b
 Usage with dev/global installation:
 
 ```bash
-npx scan-link
+npx scan-link [entryUrl]
 ```
 
 Usage without installation:
 
 ```bash
-npx -y scan-link
+npx -y scan-link [entryUrl]
 ```
+
+The `entryUrl` can be specified in argument, loaded from environment variable, or answered in the interactive prompt.
 
 ### Environment Variables
 
